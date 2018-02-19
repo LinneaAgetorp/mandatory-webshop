@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Document</title>
+        <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body>
+
+    <h1>WebShop</h1>
+
+    <div class="nav-wrapper">
+        <button id="productBtn">Go To Products</button>
+        <button id="checkoutBtn">Go To Checkout</button>
+        <i class="fas fa-shopping-cart"></i>
+    </div>
+    <section class="product-wrapper">
+
+    </section>
+
+
+    <!-- ----------Checkout Form-------- -->
+    <section class="checkout-wrapper">
+
+        <h2>Fill out the form and press Submit to complete your purchase</h2>
+
+
+        <form action="" class="contact-form" name="myForm">
+            <div class="col-50">
+                <p id="fName_err"></p>
+                <div class="input-block">
+                    <input type="text" name="fName" class="form-control" placeholder=" * First name">
+                </div>
+            </div>
+
+            <div class="col-50">
+                <p id="lName_err"></p>
+                <div class="input-block">
+                    <input type="text" name="lName" class="form-control" placeholder=" * Last name">
+                </div>
+            </div>
+
+            <div>
+                <p id="email_err"></p>
+                <div class="input-block">
+                    <input type="text" name="email" class="form-control" placeholder=" * Email">
+                </div>
+            </div>
+
+            <div>
+                <div class="input-block">
+                    <input type="text" class="form-control" placeholder=" Phone number">
+                </div>
+            </div>
+
+            <div class="col-50">
+                <p id="street_err"></p>
+                <div class="input-block">
+                    <input type="text" name="street" class="form-control" placeholder=" * Street">
+                </div>
+            </div>
+
+            <div class="col-50">
+                <p id="zipCode_err"></p>
+                <div class="input-block">
+                    <input type="text" name="zipCode" class="form-control" placeholder=" * Zip code">
+                </div>
+            </div>
+
+            <div>
+                <p id="city_err"></p>
+                <div class="input-block">
+                    <input type="text" name="city" class="form-control" placeholder=" * City">
+                </div>
+            </div>
+
+            <div>
+                <div class="input-block">
+                    <input type="text" class="form-control" placeholder=" Subject of message">
+                </div>
+            </div>
+
+            <div>
+                <div class="input-block">
+                    <textarea rows="3" class="form-control" placeholder=" Write a message if you want..."></textarea>
+                </div>
+            </div>
+            <p id="optional">* = field is required</p>
+
+            <div class="button-wrap">
+                <button id="square-button">Submit</button>
+            </div>
+        </form>
+
+
+    </section>
+
+
+    <script src="../scripts/index.js"> </script>
+    </body>
+</html>
