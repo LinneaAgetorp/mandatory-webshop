@@ -1,0 +1,113 @@
+button{
+    cursor: pointer;
+}
+
+.product-wrapper {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 2em;
+}
+
+.product-wrapper div,
+.product-wrapper div, img{
+    margin: 1em;
+}
+
+
+.nav-wrapper{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.fa-shopping-cart{
+    font-size: 1.5em;
+    padding:0 1em;
+}
+
+
+h1, h2, p{
+    text-align: center;
+}
+
+.product-wrapper div h2{
+    display: inline-block;
+}
+
+.product-wrapper div img{
+    width: 100%;
+    height: auto;
+
+}
+
+.product{
+    border: 1px solid black;
+    padding: 1em;
+}
+
+/* ------ IMG width for desktop-view ------*/
+@media (min-width: 30em) {
+    .product-wrapper div img{
+    width: 200px;
+    }
+}
+
+
+
+/*----------contact form styling----------*/
+
+.contact-form {
+    margin: 0 auto;
+    width: 75vw;
+}
+
+.input-block {
+    background-color: white;
+    border: solid 1px darkgray;
+    box-shadow: 1px 0px gray;
+    margin-bottom: 20px;
+}
+
+textarea{
+     height: 100%;
+}
+
+.form-control{
+    margin: 0;
+    width: 100%;
+    padding: 0.6em 0;
+    border: none;
+    font-size: 18px;
+}
+
+
+.errorBorder{
+    outline-offset: -2px;
+    outline: red auto 5px;
+}
+
+
+/* skicka-knappen styling*/
+   #square-button{
+   height: 60px;
+   width: 100%;
+   font-size: 26px;
+   text-transform: uppercase;
+   font-weight: 700;
+}
+   #square-button:hover{
+       background-color: lightgray;
+   }
+
+/*--------Styling form desktop-view ----*/
+@media (min-width: 30em) {
+    .col-50{
+        width: 49.5%;
+        display: inline-block;
+        
+    }
+    .button-wrap{
+        width: 50%;
+        margin: 0 auto;
+    }
+}
