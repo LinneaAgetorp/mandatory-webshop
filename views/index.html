@@ -9,21 +9,39 @@
         <link rel="stylesheet" href="../css/style.css">
     </head>
     <body>
-
+<header>
     <h1>WebShop</h1>
 
     <div class="nav-wrapper">
         <button id="productBtn">Go To Products</button>
         <button id="checkoutBtn">Go To Checkout</button>
-        <i class="fas fa-shopping-cart"></i>
+        <div id="cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="itemsCounter">0</span>
+        </div>
     </div>
+</header>
+
     <section class="product-wrapper">
 
     </section>
 
+    <!-- ----------Checkout Page------------- -->
+
+    <!-- ----------Checkout Shopping Cart---- -->
+
+        <!-- Render the checkout cart into this div-->
+    <section class="checkout-wrapper">
+        <h2>Your shopping cart:</h2>
+        <div id="checkoutCart"></div>
+
+
+
+        </div>
+
 
     <!-- ----------Checkout Form-------- -->
-    <section class="checkout-wrapper">
+
 
         <h2>Fill out the form and press Submit to complete your purchase</h2>
 
@@ -97,6 +115,10 @@
 
 
     </section>
+
+<footer>
+    <p>webshop@gmail.com</p>
+</footer>
 
 
     <script src="../scripts/index.js"> </script>
