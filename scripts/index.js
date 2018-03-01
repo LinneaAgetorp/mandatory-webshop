@@ -1,30 +1,39 @@
+let $moreInfoPage = $(".product-info");
+let $checkoutWrapper = $('.checkout-wrapper');
+let $productWrapper = $('.product-wrapper');
+
 const initializePage = () => {
-    let checkoutWrapper = document.querySelector(".checkout-wrapper");
-    let productWrapper = document.querySelector(".product-wrapper");
-    let checkoutBtn = document.getElementById("checkoutBtn");
-    let productBtn = document.getElementById("productBtn");
-    let submitBtn = document.getElementById("square-button"); //submit form-button
+
+    let $checkoutBtn = $("#checkoutBtn");
+    let $productBtn = $("#productBtn");
+    let $submitBtn = $("#square-button"); //submit form-button
+
 
 //Switches between "product view" and "checkout view"
-    checkoutWrapper.style.display = "none";
+    $checkoutWrapper.hide();
+    $moreInfoPage.hide();
 
-    productBtn.addEventListener("click", function () {
-        checkoutWrapper.style.display = "none";
-        productWrapper.style.display = "flex";
+    $productBtn.click(() => {
+        $checkoutWrapper.hide();
+        $productWrapper.show();
+        $moreInfoPage.hide();
     });
 
-    checkoutBtn.addEventListener("click", function () {
-        productWrapper.style.display = "none";
-        checkoutWrapper.style.display = "block";
+    $checkoutBtn.click(() => {
+        $productWrapper.hide();
+        $checkoutWrapper.show();
+        $moreInfoPage.hide();
         checkoutFunctions.renderCheckout();
-
     });
+
+
 //Submit form btn
-    submitBtn.addEventListener("click", function (e) {
+    $submitBtn.click(e => {
         e.preventDefault();
         formFunctions.validateForm();
     });
 };
+
 
 const appState = {
     cart: {
@@ -56,65 +65,192 @@ const appState = {
             id: "id3"
         }
     ],
+    reviews: [
+        {
+            name: "Kalle",
+            rating: "5",
+            comment: "Great! Kick it, you'll love it",
+            productId: "id3",
+        },
+        {
+            name: "Knut",
+            rating: "5",
+            comment: "Greatest! You can really lift it an infinite number of times without a problem",
+            productId: "id1",
+        },
+        {
+            name: "Pelle",
+            rating: "1",
+            comment: "Bad! It's heavy and it smells like sweat",
+            productId: "id1",
+        },
+        {
+            name: "John",
+            rating: "5",
+            comment: "Nice color!",
+            productId: "id1",
+        },
+        {
+            name: "Tim",
+            rating: "5",
+            comment: "Great! Makes you run faster than ever",
+            productId: "id2",
+        },
+        {
+            name: "Coco",
+            rating: "1",
+            comment: "Too small size",
+            productId: "id2",
+        },
+        {
+            name: "Nic",
+            rating: "3",
+            comment: "The football is round, anything can happen",
+            productId: "id3",
+        },
+        {
+            name: "Voltaire",
+            rating: "5",
+            comment: "Great colors!",
+            productId: "id3",
+        },
+    ]
 };
 
 const productPage = {
     render: () => {
-        let productWrapper = document.querySelector(".product-wrapper");
+        let $productWrapper = $(".product-wrapper");
 
         appState.productCatalogue.map((product) => {
-            const productElement = document.createElement("div");
-            productWrapper.appendChild(productElement);
-            productElement.className = "product";
+            $productWrapper.append(
+                `<div class="product"> 
+                <h2>${product.productName}</h2>
+                <p>Price: ${product.price} kr</p>
+                <img src=${product.image}>
+                <p>${product.description}</p>
+                <button id="addBtn-${product.id}">${product.button}</button>
+                <button id="moreInfoBtn-${product.id}">More Info</button>
+            </div> 
+            `);
 
-            const title = document.createElement("h2");
-            title.innerHTML = product.productName;
-            productElement.appendChild(title);
-
-            const productPrice = document.createElement("p");
-            productPrice.innerHTML = `Price: ${product.price} SEK`;
-            productElement.appendChild(productPrice);
-
-            const productImage = document.createElement("img");
-            productImage.src = product.image;
-            productElement.appendChild(productImage);
-
-            const productDescription = document.createElement("p");
-            productDescription.innerHTML = product.description;
-            productElement.appendChild(productDescription);
-
-            const addBtn = document.createElement("button");
-            addBtn.innerHTML = product.button;
-            productElement.appendChild(addBtn);
-
-            addBtn.addEventListener("click", () => {
+            $(`#addBtn-${product.id}`).click(() => {
                 cartFunctions.addProduct(product.id);
                 cartFunctions.updateCounter();
             });
+
+            $(`#moreInfoBtn-${product.id}`).click(() => productPage.renderInfoPage(product.id));
         });
     },
+
+
+    renderInfoPage: (productId) => {
+
+        const product = appState.productCatalogue.find((e) => e.id === productId);
+        const infoRow = $("<div class='productInfo-box'>"); //this is parent-div
+        $productWrapper.hide();
+        $checkoutWrapper.hide();
+        $moreInfoPage.empty();
+
+        infoRow.append(`
+            
+            <h2>${product.productName}</h2>
+            <img src=${product.image}>
+            <p>Description: ${product.description}</p>
+            <p>Price: ${product.price} kr</p>
+            <button id="addMoreBtn-${product.id}"> Add to Cart </button>
+            <br>
+            <h2>Let us know what you think, write a review:</h2>
+            <label>Your name: </label>
+            <input type="text" name="nameField">
+            <label>Rating (1-5): </label>
+            <select id="rating">
+              <option value="1"> 1 </option>
+              <option value="2"> 2 </option>
+              <option value="3"> 3 </option>
+              <option value="4"> 4 </option>
+              <option value="5"> 5 </option>
+            </select>
+            
+            <label>Comment: </label>
+            <input type="text" name="reviewField">
+            <button id="submitReview">Send Review</button>
+            
+            `);
+
+
+        $moreInfoPage.append(infoRow);
+        $moreInfoPage.append($('<div class="review-wrapper">'));
+        $moreInfoPage.show();
+
+        productPage.renderReviews(product.id);
+
+
+        $(`#addMoreBtn-${product.id}`).click(() => {
+            cartFunctions.addProduct(product.id);
+            cartFunctions.updateCounter()
+        });
+
+        $(`#submitReview`).click(() => productPage.addReview(product.id));
+
+
+    },
+    renderReviews: (productId) => {
+        let reviewWrapper = $('.review-wrapper');
+        reviewWrapper.empty();
+        const indexOfReview = appState.reviews.filter((e) => (e.productId === productId));
+        indexOfReview.map((element) => {
+
+            console.log(element.name);
+            reviewWrapper.append(`
+                
+                <div>
+                <p>Review from: ${element.name}</p>
+                <p>Rating: ${element.rating} stars</p>
+                <p>Comment: ${element.comment}</p>
+                </div>
+                `)
+        });
+    },
+
+
+    addReview: (productId) => {
+
+        appState.reviews.push({
+            name: $('input[name=nameField]').val(),
+            rating: $('#rating').val(),
+            comment: $('input[name=reviewField]').val(),
+            productId: productId,
+        });
+        productPage.renderReviews(productId);
+
+        $('input[name=nameField]').val(""),
+        $('input[name=ratingField]').val(""),
+        $('input[name=reviewField]').val("")
+    }
 };
+
 
 const formFunctions = {
     setErrStatus: (inputField, errMsg) => {
-        document.getElementById(`${inputField}_err`).innerHTML = errMsg; //sets error-msg
-        document.forms["myForm"][inputField].className = "form-control errorBorder"; //sets the border red
+        $(`#${inputField}_err`).html(errMsg); //sets error-msg
+        $(`input[name=${inputField}]`).addClass("errorBorder"); //sets the border red
     },
     removeErrStatus: inputField => {
-        document.getElementById(`${inputField}_err`).innerHTML = ""; //removes the error-msg
-        document.forms["myForm"][inputField].className = "form-control"; //removes the red border
+        $(`#${inputField}_err`).empty(); //removes the error-msg
+        $(`input[name=${inputField}]`).removeClass("errorBorder"); //removes the red border
     },
-    getValue: inputField => document.forms["myForm"][inputField].value, //gets value inside the input field
+    getValue: inputField => $(`input[name=${inputField}]`).val(),
     validateForm: () => {
         const allFieldNames = Object.keys(form); //all keys of the form-object is now in "allFieldNames"
         allFieldNames.map((field) => {
+
             const isValid = form[field].validate(formFunctions.getValue(field)); //validates one at a time, each form-input
             if (isValid) {
                 formFunctions.removeErrStatus(field)
             } else {
                 formFunctions.setErrStatus(field, form[field].errorMsg)
             }
-        });
+        })
     },
 };
 
@@ -149,65 +285,44 @@ const form = {
 
 const checkoutFunctions = {
     renderCheckout: () => {
-        const allHtmlElements = [];
+
         let totalAmount = 0;
-        const theCheckoutContainerElement = document.getElementById('checkoutCart');
-        theCheckoutContainerElement.innerText = "";
+        const theCheckoutContainerElement = $('#checkoutCart');
+        theCheckoutContainerElement.empty();
         appState.cart.cart_rows.map((row) => {
             const product = appState.productCatalogue.find((e) => e.id === row.productId);
-
-            const htmlRow = document.createElement("div"); //this is parent-div
-            htmlRow.className = "checkout-row";
-
-            const name = document.createElement("p");
-            name.innerText = "Product: " + product.productName;
-            htmlRow.appendChild(name);
-
-            const count = document.createElement("p");
-            count.innerText = "Nr of this product: " + row.count;
-            htmlRow.appendChild(count);
-
-            //create add button in the row
-            const addProductBtn = document.createElement("button");
-            addProductBtn.innerText = "+";
-            htmlRow.appendChild(addProductBtn);
-            addProductBtn.addEventListener("click", () => cartFunctions.increaseAmount(row.productId));
-
-            //create remove button in the row
-            const removeProductBtn = document.createElement("button");
-            removeProductBtn.innerText = " - ";
-            htmlRow.appendChild(removeProductBtn);
-            removeProductBtn.addEventListener("click", () => cartFunctions.decreaseAmount(row.productId));
-
-
-            const price = document.createElement("p");
-            price.innerText = "Price per product: " + product.price + " kr";
-            htmlRow.appendChild(price);
-
-            const rowTotal = document.createElement("p");
+            const htmlRow = $("<div class='checkout-row'>"); //this is parent-div
             let rowSum = (product.price * row.count);
-            rowTotal.innerText = "This row total: " + rowSum + " kr";
-            htmlRow.appendChild(rowTotal);
-
-            const eliminateRow = document.createElement("button");
-            eliminateRow.innerText = "X";
-            htmlRow.appendChild(eliminateRow);
-            eliminateRow.addEventListener("click", () => cartFunctions.eliminatingThisRow(row.productId));
-
-            allHtmlElements.push(htmlRow);
-
             totalAmount += rowSum; //adds up every rowSum into totalAmount
 
-            theCheckoutContainerElement.appendChild(htmlRow); //makes current html-element a child of checkoutCart
+
+            htmlRow.append(`
+            
+            <p>Product: ${product.productName}</p>
+            <div id="cartItems"><p>Nr of this product: ${row.count}</p>
+            <button id="plusOneBtn${product.id}"> + </button>
+            <button id="minusOneBtn${product.id}"> - </button></div>
+            <p>Price per product: ${product.price} kr</p>
+            <p>This row total: ${rowSum} kr</p>
+            <button id="deleteBtn${product.id}"> X </button>
+            `);
+
+
+            theCheckoutContainerElement.append(htmlRow); //makes current html-element a child of checkoutCart
+
+            $(`#plusOneBtn${product.id}`).click(() => cartFunctions.increaseAmount(product.id));
+            $(`#minusOneBtn${product.id}`).click(() => cartFunctions.decreaseAmount(product.id));
+            $(`#deleteBtn${product.id}`).click(() => cartFunctions.eliminatingThisRow(product.id));
+
         });
 
 
-        const totalAmountElement = document.createElement("h2");
-        totalAmountElement.innerText = "Total amount: " + totalAmount.toString() + " kr";
-        theCheckoutContainerElement.appendChild(totalAmountElement);
+        theCheckoutContainerElement.append(
+            `
+            <h2>Total amount: ${totalAmount} kr</h2>
+      `);
 
     },
-
 
 };
 
@@ -224,7 +339,7 @@ const cartFunctions = {
         return appState.cart.cart_rows.reduce((acc, row) => acc + row.count, 0);
     },
     updateCounter: () => { //sends total of cart_rows.count to the "cart icon-counter"
-        document.getElementById("itemsCounter").innerText = cartFunctions.getCount().toString();
+        $("#itemsCounter").text(cartFunctions.getCount().toString());
     },
     increaseAmount: function (productId) {
         appState.cart.cart_rows.map((element) => {
@@ -236,8 +351,8 @@ const cartFunctions = {
         checkoutFunctions.renderCheckout();
     },
 
-    decreaseAmount: function (productId) { //hej2
-        appState.cart.cart_rows.map((element) => { //cart_rows productId: hej2
+    decreaseAmount: function (productId) {
+        appState.cart.cart_rows.map((element) => {
             if (productId === element.productId) {
                 element.count--;
                 if (element.count < 0) {

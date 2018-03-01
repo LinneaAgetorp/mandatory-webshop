@@ -39,6 +39,10 @@ button{
 
 h1, h2, p{
     text-align: center;
+
+}
+h1, h2{
+    margin: 1em;
 }
 
 .product h2{
@@ -59,8 +63,61 @@ h1, h2, p{
     margin: 1em;
 }
 
+/* ------- individual product-page ------ */
+.product-info{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    margin: 1em;
+}
+
+.productInfo-box{
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    justify-content: center;
+    margin: 1em;
+    padding: 0 1em;
+    width: 350px;
+}
+
+.review-wrapper > div{
+    margin-top: 1em;
+    padding: 0.5em 1em;
+    border: 1px dotted grey;
+    min-width: 250px;
+}
+
+.review-wrapper p{
+    font-size: 0.9em;
+}
+
+.product-info button{
+    width: 6em;
+    margin: 1em;
+    align-self: center;
+}
+
+.productInfo-box label,
+#rating{
+    align-self: center;
+    margin-top: 1em;
+}
+
+/* ------- individual product-page DESKTOP------ */
+@media (min-width: 40em) {
+    .product-info{
+        flex-direction: row;
+        justify-content: space-around;
+    }
+    .review-wrapper{
+        flex-direction: column;
+    }
+}
+
+
 /* ------ IMG width for desktop-view ------*/
-@media (min-width: 30em) {
+@media (min-width: 40em) {
     .product-wrapper div img{
     width: 200px;
     }
@@ -114,7 +171,7 @@ textarea{
    }
 
 /*--------Styling form desktop-view ----*/
-@media (min-width: 30em) {
+@media (min-width: 40em) {
     .checkout-wrapper{
         margin-top: 3em;
     }
@@ -141,15 +198,39 @@ textarea{
 .checkout-row p{
     padding: 0 1em;
 }
-.checkout-row p:first-child{
+.checkout-row > p:first-child{
     width: 200px;
     text-align: left;
+    text-decoration: underline;
 }
 
+#cartItems{
+    display: flex;
+    align-self: center;
+}
+#cartItems p{
+    padding: 0.5em;
+}
+
+/*--------Styling shopping cart only mobile-view ----*/
+@media (max-width: 40em) {
+    .checkout-row {
+        display: flex;
+        flex-direction: column;
+    }
+    .checkout-row button{
+        align-self: center;
+    }
+}
 /*--------Styling shopping cart desktop-view ----*/
-@media (min-width: 30em) {
-    .checkout-row p{
-        display: inline-block;
+@media (min-width: 40em) {
+    .checkout-row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .checkout-row button{
+        align-self: center;
     }
 }
 
