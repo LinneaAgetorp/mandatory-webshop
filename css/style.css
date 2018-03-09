@@ -50,17 +50,17 @@ h1, h2{
     padding-left: 1em;
 }
 
-.product-wrapper div img{
-    width: 100%;
-    height: auto;
-
-}
 
 .product{
     border: 1px solid black;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 350px;
 }
 .product button{
     margin: 1em;
+    height: 2em;
 }
 
 /* ------- individual product-page ------ */
@@ -115,13 +115,6 @@ h1, h2{
     }
 }
 
-
-/* ------ IMG width for desktop-view ------*/
-@media (min-width: 40em) {
-    .product-wrapper div img{
-    width: 200px;
-    }
-}
 
 
 

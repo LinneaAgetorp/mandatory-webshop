@@ -1,3 +1,21 @@
+// Get products from database:
+fetch('https://demo.edument.se/api/products')
+    .then(response => response.json())
+    .then(products => {
+        appState.productCatalogue = products;
+        productPage.render();
+    })
+    .catch(err => console.log(err));
+
+// Get products from database:
+fetch('https://demo.edument.se/api/reviews')
+    .then(response => response.json())
+    .then(reviews => {
+        appState.Reviews = reviews;
+    })
+    .catch(err => console.log(err));
+
+
 let $moreInfoPage = $(".product-info");
 let $checkoutWrapper = $('.checkout-wrapper');
 let $productWrapper = $('.product-wrapper');
@@ -28,9 +46,10 @@ const initializePage = () => {
 
 
 //Submit form btn
-    $submitBtn.click(e => {
+    $submitBtn.click((e) => {
         e.preventDefault();
         formFunctions.validateForm();
+        checkoutFunctions.createOrder();
     });
 };
 
@@ -39,113 +58,39 @@ const appState = {
     cart: {
         cart_rows: [],
     },
-    productCatalogue: [
-        {
-            productName: "Kettle bell",
-            price: 2,
-            description: "Lift it",
-            image: "https://images-na.ssl-images-amazon.com/images/I/71LERlrOJ7L._SY355_.jpg",
-            button: "Add To Cart",
-            id: "id1"
-        },
-        {
-            productName: "Running Shoe",
-            price: 2,
-            description: "Run faster",
-            image: "https://c.static-nike.com/a/images/t_default/l0wccd0un22ifwhpriph/free-rn-flyknit-2017-big-kids-running-shoe-9LWVx3.jpg",
-            button: "Add To Cart",
-            id: "id2"
-        },
-        {
-            productName: "Football",
-            price: 2,
-            description: "Kick it",
-            image: "https://images-na.ssl-images-amazon.com/images/I/61F-Epj6A9L._SX355_.jpg",
-            button: "Add To Cart",
-            id: "id3"
-        }
-    ],
-    reviews: [
-        {
-            name: "Kalle",
-            rating: "5",
-            comment: "Great! Kick it, you'll love it",
-            productId: "id3",
-        },
-        {
-            name: "Knut",
-            rating: "5",
-            comment: "Greatest! You can really lift it an infinite number of times without a problem",
-            productId: "id1",
-        },
-        {
-            name: "Pelle",
-            rating: "1",
-            comment: "Bad! It's heavy and it smells like sweat",
-            productId: "id1",
-        },
-        {
-            name: "John",
-            rating: "5",
-            comment: "Nice color!",
-            productId: "id1",
-        },
-        {
-            name: "Tim",
-            rating: "5",
-            comment: "Great! Makes you run faster than ever",
-            productId: "id2",
-        },
-        {
-            name: "Coco",
-            rating: "1",
-            comment: "Too small size",
-            productId: "id2",
-        },
-        {
-            name: "Nic",
-            rating: "3",
-            comment: "The football is round, anything can happen",
-            productId: "id3",
-        },
-        {
-            name: "Voltaire",
-            rating: "5",
-            comment: "Great colors!",
-            productId: "id3",
-        },
-    ]
+    productCatalogue: [],
+    Reviews: []
 };
 
 const productPage = {
     render: () => {
+
         let $productWrapper = $(".product-wrapper");
 
         appState.productCatalogue.map((product) => {
             $productWrapper.append(
                 `<div class="product"> 
-                <h2>${product.productName}</h2>
-                <p>Price: ${product.price} kr</p>
-                <img src=${product.image}>
-                <p>${product.description}</p>
-                <button id="addBtn-${product.id}">${product.button}</button>
-                <button id="moreInfoBtn-${product.id}">More Info</button>
+                <h2>${product.Name}</h2>
+                <p>Price: ${product.Price} kr</p>
+                <img src=${product.Image}>
+                <p>${product.Description}</p>
+                <button id="addBtn-${product.Id}">Add to Cart</button>
+                <button id="moreInfoBtn-${product.Id}">More Info</button>
             </div> 
             `);
 
-            $(`#addBtn-${product.id}`).click(() => {
-                cartFunctions.addProduct(product.id);
+            $(`#addBtn-${product.Id}`).click(() => {
+                cartFunctions.addProduct(product.Id);
                 cartFunctions.updateCounter();
             });
 
-            $(`#moreInfoBtn-${product.id}`).click(() => productPage.renderInfoPage(product.id));
+            $(`#moreInfoBtn-${product.Id}`).click(() => productPage.renderInfoPage(product.Id));
         });
     },
 
 
     renderInfoPage: (productId) => {
-
-        const product = appState.productCatalogue.find((e) => e.id === productId);
+        const product = appState.productCatalogue.find((e) => e.Id === productId);
         const infoRow = $("<div class='productInfo-box'>"); //this is parent-div
         $productWrapper.hide();
         $checkoutWrapper.hide();
@@ -153,11 +98,11 @@ const productPage = {
 
         infoRow.append(`
             
-            <h2>${product.productName}</h2>
-            <img src=${product.image}>
-            <p>Description: ${product.description}</p>
-            <p>Price: ${product.price} kr</p>
-            <button id="addMoreBtn-${product.id}"> Add to Cart </button>
+            <h2>${product.Name}</h2>
+            <img src=${product.Image}>
+            <p>Description: ${product.Description}</p>
+            <p>Price: ${product.Price} kr</p>
+            <button id="addMoreBtn-${product.Id}"> Add to Cart </button>
             <br>
             <h2>Let us know what you think, write a review:</h2>
             <label>Your name: </label>
@@ -182,51 +127,69 @@ const productPage = {
         $moreInfoPage.append($('<div class="review-wrapper">'));
         $moreInfoPage.show();
 
-        productPage.renderReviews(product.id);
+        productPage.renderReviews(product.Id);
 
 
-        $(`#addMoreBtn-${product.id}`).click(() => {
-            cartFunctions.addProduct(product.id);
+        $(`#addMoreBtn-${product.Id}`).click(() => {
+            cartFunctions.addProduct(product.Id);
             cartFunctions.updateCounter()
         });
 
-        $(`#submitReview`).click(() => productPage.addReview(product.id));
+        $(`#submitReview`).click(() => productPage.addReview(product.Id));
 
 
     },
     renderReviews: (productId) => {
         let reviewWrapper = $('.review-wrapper');
         reviewWrapper.empty();
-        const indexOfReview = appState.reviews.filter((e) => (e.productId === productId));
-        indexOfReview.map((element) => {
+        const reviews = appState.Reviews.filter(review => (review.ProductID === productId));
 
-            console.log(element.name);
+        reviews.map((review) => {
+
             reviewWrapper.append(`
-                
-                <div>
-                <p>Review from: ${element.name}</p>
-                <p>Rating: ${element.rating} stars</p>
-                <p>Comment: ${element.comment}</p>
-                </div>
-                `)
-        });
+            
+            <div>
+            <p>Review from: ${review.Name}</p>
+            <p>Rating: ${review.Rating} stars</p>
+            <p>Comment: ${review.Comment}</p>
+            </div>
+            `)
+
+        })
+
+    },
+
+    postReview: (review) => {
+        return fetch('https://demo.edument.se/api/reviews',
+            {
+                method: 'POST',
+                body: JSON.stringify(review),
+                headers: new Headers({'Content-Type': 'application/json'})
+            });
     },
 
 
     addReview: (productId) => {
 
-        appState.reviews.push({
-            name: $('input[name=nameField]').val(),
-            rating: $('#rating').val(),
-            comment: $('input[name=reviewField]').val(),
-            productId: productId,
-        });
+
+        const newReview = {
+            ProductID: productId,
+            Name: $('input[name=nameField]').val(),
+            Comment: $('input[name=reviewField]').val(),
+            Rating: parseInt($('#rating').val()),
+        };
+
+        console.log(newReview);
+        $('input[name=nameField]').val("");
+        $('input[name=ratingField]').val("");
+        $('input[name=reviewField]').val("");
+
+        productPage.postReview(newReview);
+        appState.Reviews.push(newReview);
         productPage.renderReviews(productId);
 
-        $('input[name=nameField]').val(""),
-        $('input[name=ratingField]').val(""),
-        $('input[name=reviewField]').val("")
-    }
+    },
+
 };
 
 
@@ -253,6 +216,7 @@ const formFunctions = {
         })
     },
 };
+
 
 //Validation form-inputs
 const form = {
@@ -289,38 +253,82 @@ const checkoutFunctions = {
         let totalAmount = 0;
         const theCheckoutContainerElement = $('#checkoutCart');
         theCheckoutContainerElement.empty();
+
+
         appState.cart.cart_rows.map((row) => {
-            const product = appState.productCatalogue.find((e) => e.id === row.productId);
+            const product = appState.productCatalogue.find((e) => e.Id === row.productId);
             const htmlRow = $("<div class='checkout-row'>"); //this is parent-div
-            let rowSum = (product.price * row.count);
+            let rowSum = (product.Price * row.count);
             totalAmount += rowSum; //adds up every rowSum into totalAmount
 
 
             htmlRow.append(`
             
-            <p>Product: ${product.productName}</p>
+            <p>Product: ${product.Name}</p>
             <div id="cartItems"><p>Nr of this product: ${row.count}</p>
-            <button id="plusOneBtn${product.id}"> + </button>
-            <button id="minusOneBtn${product.id}"> - </button></div>
-            <p>Price per product: ${product.price} kr</p>
+            <button id="plusOneBtn${product.Id}"> + </button>
+            <button id="minusOneBtn${product.Id}"> - </button></div>
+            <p>Price per product: ${product.Price} kr</p>
             <p>This row total: ${rowSum} kr</p>
-            <button id="deleteBtn${product.id}"> X </button>
+            <button id="deleteBtn${product.Id}"> X </button>
             `);
 
 
             theCheckoutContainerElement.append(htmlRow); //makes current html-element a child of checkoutCart
 
-            $(`#plusOneBtn${product.id}`).click(() => cartFunctions.increaseAmount(product.id));
-            $(`#minusOneBtn${product.id}`).click(() => cartFunctions.decreaseAmount(product.id));
-            $(`#deleteBtn${product.id}`).click(() => cartFunctions.eliminatingThisRow(product.id));
+            $(`#plusOneBtn${product.Id}`).click(() => cartFunctions.increaseAmount(product.Id));
+            $(`#minusOneBtn${product.Id}`).click(() => cartFunctions.decreaseAmount(product.Id));
+            $(`#deleteBtn${product.Id}`).click(() => cartFunctions.eliminatingThisRow(product.Id));
 
         });
-
 
         theCheckoutContainerElement.append(
             `
             <h2>Total amount: ${totalAmount} kr</h2>
       `);
+
+    },
+    submitOrder: (order) => {
+        return fetch('https://demo.edument.se/api/orders',
+            {
+                method: 'POST',
+                body: JSON.stringify(order),
+                headers: new Headers({'Content-Type': 'application/json'})
+            });
+
+    },
+
+    createOrder: () => {
+        const products = appState.cart.cart_rows.map((row) =>
+            appState.productCatalogue.find((product) => row.productId === product.Id)
+        );
+        const newOrder = {
+            FirstName: $('input[name=fName]').val(),
+            LastName: $('input[name=lName]').val(),
+            Email: $('input[name=email]').val(),
+            Phone: $('input[name=phoneNr]').val(),
+            StreetAddress: $('input[name=street]').val(),
+            ZipCode: $('input[name=zipCode]').val(),
+            City: $('input[name=city]').val(),
+            Comment: $('input[name=comment]').val(),
+            OrderItems: products
+        };
+
+        console.log(newOrder);
+
+
+        checkoutFunctions
+            .submitOrder(newOrder)
+            .then(response => {
+                console.log(response);
+                alert('Success! You have placed your order! ', JSON.stringify(newOrder, null, 2));
+
+                const theCheckoutContainerElement = $('#checkoutCart');
+                theCheckoutContainerElement.empty();
+                //empty shopping cart
+                appState.cart.cart_rows = [];
+                cartFunctions.updateCounter();
+            });
 
     },
 
@@ -370,12 +378,15 @@ const cartFunctions = {
             }
         });
         cartFunctions.updateCounter();
+
         checkoutFunctions.renderCheckout();
     },
 };
 
+
 // Start Page
 initializePage();
-productPage.render();
+
+//productPage.render(products);
 
 
