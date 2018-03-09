@@ -7,7 +7,7 @@ fetch('https://demo.edument.se/api/products')
     })
     .catch(err => console.log(err));
 
-// Get products from database:
+// Get reviews from database:
 fetch('https://demo.edument.se/api/reviews')
     .then(response => response.json())
     .then(reviews => {
@@ -53,7 +53,7 @@ const initializePage = () => {
     });
 };
 
-
+//this is where shopping cart, products and reviews are "saved"
 const appState = {
     cart: {
         cart_rows: [],
@@ -170,8 +170,6 @@ const productPage = {
 
 
     addReview: (productId) => {
-
-
         const newReview = {
             ProductID: productId,
             Name: $('input[name=nameField]').val(),
@@ -179,14 +177,13 @@ const productPage = {
             Rating: parseInt($('#rating').val()),
         };
 
-        console.log(newReview);
         $('input[name=nameField]').val("");
         $('input[name=ratingField]').val("");
         $('input[name=reviewField]').val("");
 
         productPage.postReview(newReview);
-        appState.Reviews.push(newReview);
-        productPage.renderReviews(productId);
+        appState.Reviews.push(newReview); //this is to make the new review
+        productPage.renderReviews(productId);//appear directly to the page, without reloading
 
     },
 
